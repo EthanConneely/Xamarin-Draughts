@@ -16,6 +16,8 @@ namespace Draughts
         private Image selectedPiece;
         readonly List<Image> pieces = new List<Image>();
 
+        bool isBlacksTurn;
+
         public MainPage()
         {
             InitializeComponent();
@@ -64,6 +66,9 @@ namespace Draughts
             selectedPiece = null;
         }
 
+        /// <summary>
+        /// Add the pieces to the board
+        /// </summary>
         private void AddPiecesToBoard()
         {
             int index = 0;
@@ -106,6 +111,9 @@ namespace Draughts
             }
         }
 
+        /// <summary>
+        /// Add the clickable tiles to the board
+        /// </summary>
         private void AddSquaresToTheBoard()
         {
             TapGestureRecognizer t_sq = new TapGestureRecognizer();
@@ -131,6 +139,9 @@ namespace Draughts
             }
         }
 
+        /// <summary>
+        /// Board square selected
+        /// </summary>
         private void Square_Tapped(object sender, EventArgs e)
         {
             // is there a current piece selected? if not, return.
@@ -184,10 +195,28 @@ namespace Draughts
                 selectedPiece.SetValue(Grid.ColumnProperty, clickableCell.GetValue(Grid.ColumnProperty));
                 selectedPiece.BackgroundColor = Color.Transparent;
 
+                // Toggle between black and white team
+                isBlacksTurn = !isBlacksTurn;
+
+                if (isBlacksTurn)
+                {
+                    TurnTitle.Text = "Black's Turn";
+                }
+                else
+                {
+                    TurnTitle.Text = "White's Turn";
+                }
+
                 selectedPiece = null;
             }
         }
 
+        /// <summary>
+        /// Loops through all the pieces we have and on the board and checks if they are at the grid position
+        /// </summary>
+        /// <param name="targetX">X Grid Position</param>
+        /// <param name="targetY">Y Grid Position</param>
+        /// <returns>The grid piece if it finds one otherwise returns null</returns>
         private Image GetPieceAt(int targetX, int targetY)
         {
             foreach (Image piece in pieces)
@@ -218,7 +247,7 @@ namespace Draughts
                 TakenWhitePieces.Children.Add(piece);
                 piece.SetValue(Grid.ColumnProperty, blackScore);
             }
-            else
+            else// Black pieces
             {
                 TakenBlackPieces.Children.Add(piece);
                 piece.SetValue(Grid.ColumnProperty, whiteScore);
@@ -250,6 +279,9 @@ namespace Draughts
 
             Image piece = GetPieceAt(x, y);
 
+            // first check if there is a piece there to jump
+            // second make sure the direction is the same as we are allowed to go
+            // third make sure we cant take our own piece the replace just removes the _crowned to get color in the style id
             if (piece != null && direction == -yDiff && selectedPiece.StyleId.Replace("_crowned", "") != piece.StyleId.Replace("_crowned", ""))
             {
                 TakePiece(piece);
@@ -258,7 +290,7 @@ namespace Draughts
                 {
                     whiteScore++;
                 }
-                else
+                else// Black pieces
                 {
                     blackScore++;
                 }
@@ -271,12 +303,25 @@ namespace Draughts
 
         private void Piece_Tapped(object sender, EventArgs e)
         {
+            Image piece = (Image)sender;
+
+            // if we click on a white piece and its not their turn return and dont allow selecting it
+            if (piece.StyleId.Contains("white") && isBlacksTurn)
+            {
+                return;
+            }
+
+            // if we click on a black piece and its not their turn return and dont allow selecting it
+            if (piece.StyleId.Contains("black") && isBlacksTurn == false)
+            {
+                return;
+            }
+
             if (selectedPiece != null)
             {
                 selectedPiece.BackgroundColor = Color.Transparent;
             }
 
-            Image piece = (Image)sender;
             piece.BackgroundColor = Color.Orange;
             selectedPiece = piece;
         }

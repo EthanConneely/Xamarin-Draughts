@@ -1,46 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="Draughts.MainPage">
 
-    <StackLayout VerticalOptions="CenterAndExpand">
+    <StackLayout BackgroundColor="White" VerticalOptions="CenterAndExpand">
 
-        <StackLayout BackgroundColor="White" Orientation="Vertical" VerticalOptions="Fill">
-            <Grid HeightRequest="100" x:Name="TakenWhitePieces">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-            </Grid>
+        <Label Text="White's Turn" FontSize="Title" TextColor="Black" HorizontalOptions="CenterAndExpand" x:Name="TurnTitle" />
+        <StackLayout Orientation="Vertical" VerticalOptions="Fill">
+
+            <Grid HeightRequest="100" x:Name="TakenWhitePieces" />
 
             <StackLayout x:Name="GameBoardContainer" VerticalOptions="FillAndExpand">
                 <Grid x:Name="GameBoard" HorizontalOptions="Center" VerticalOptions="Center" RowSpacing="0" ColumnSpacing="0" />
             </StackLayout>
 
-            <Grid HeightRequest="100" x:Name="TakenBlackPieces">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-            </Grid>
+            <Grid HeightRequest="100" x:Name="TakenBlackPieces" />
         </StackLayout>
 
     </StackLayout>
