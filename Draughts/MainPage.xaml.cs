@@ -7,16 +7,26 @@ namespace Draughts
 {
     public partial class MainPage : ContentPage
     {
+        // Consts
         private const int BOARD_ROWS = 8;
         private const int BOARD_COLS = 8;
 
+        // StyleIDs
+        private const string WhiteTeamStyleID = "white";
+        private const string BlackTeamStyleID = "black";
+        private const string CrownedStyleID = "_crowned";
+
+        // Scores
         private int whiteScore;
         private int blackScore;
 
-        private Image selectedPiece;
-        readonly List<Image> pieces = new List<Image>();
 
-        bool isBlacksTurn;
+        // Selected Pieces
+        private Image selectedPiece;
+        private readonly List<Image> pieces = new List<Image>();
+
+        // 
+        private bool isBlacksTurn;
 
         public MainPage()
         {
@@ -73,9 +83,9 @@ namespace Draughts
         {
             int index = 0;
 
-            TapGestureRecognizer t_sq = new TapGestureRecognizer();
-            t_sq.NumberOfTapsRequired = 1;
-            t_sq.Tapped += Piece_Tapped;
+            TapGestureRecognizer tapGesture = new TapGestureRecognizer();
+            tapGesture.NumberOfTapsRequired = 1;
+            tapGesture.Tapped += Piece_Tapped;
 
             for (int y = 0; y < BOARD_ROWS; y++)
             {
@@ -89,19 +99,19 @@ namespace Draughts
                         if (y < 4)
                         {
                             piece.Source = "black_piece.png";
-                            piece.StyleId = "black";
+                            piece.StyleId = BlackTeamStyleID;
                         }
                         else
                         {
                             piece.Source = "white_piece.png";
-                            piece.StyleId = "white";
+                            piece.StyleId = WhiteTeamStyleID;
                         }
 
                         piece.HorizontalOptions = LayoutOptions.Center;
                         piece.VerticalOptions = LayoutOptions.Center;
                         piece.SetValue(Grid.RowProperty, y);
                         piece.SetValue(Grid.ColumnProperty, x);
-                        piece.GestureRecognizers.Add(t_sq);
+                        piece.GestureRecognizers.Add(tapGesture);
 
                         // add the boxview to the collection called Children on the Grid.
                         GameBoard.Children.Add(piece);
@@ -116,9 +126,9 @@ namespace Draughts
         /// </summary>
         private void AddSquaresToTheBoard()
         {
-            TapGestureRecognizer t_sq = new TapGestureRecognizer();
-            t_sq.NumberOfTapsRequired = 1;
-            t_sq.Tapped += Square_Tapped;
+            TapGestureRecognizer tapGesture = new TapGestureRecognizer();
+            tapGesture.NumberOfTapsRequired = 1;
+            tapGesture.Tapped += Square_Tapped;
 
             for (int y = 0; y < BOARD_ROWS; y++)
             {
@@ -130,7 +140,7 @@ namespace Draughts
                         BoxView sq = new BoxView();
 
                         sq.BackgroundColor = Color.Transparent;
-                        sq.GestureRecognizers.Add(t_sq);
+                        sq.GestureRecognizers.Add(tapGesture);
                         sq.SetValue(Grid.ColumnProperty, x);
                         sq.SetValue(Grid.RowProperty, y);
                         GameBoard.Children.Add(sq);
@@ -153,11 +163,11 @@ namespace Draughts
 
             int verticalDiretion = 0;
 
-            if (selectedPiece.StyleId == "black")// Move Up
+            if (selectedPiece.StyleId == BlackTeamStyleID)// Move Up
             {
                 verticalDiretion = -1;
             }
-            else if (selectedPiece.StyleId == "white")// Move Up
+            else if (selectedPiece.StyleId == WhiteTeamStyleID)// Move Up
             {
                 verticalDiretion = 1;
             }
@@ -183,10 +193,10 @@ namespace Draughts
                 // Check for crowning
                 if (targetY == 0 || targetY == 7)
                 {
-                    if (selectedPiece.StyleId.Contains("crowned") == false)
+                    if (selectedPiece.StyleId.Contains(CrownedStyleID) == false)
                     {
                         selectedPiece.Source = selectedPiece.StyleId + "_crowned_piece.png";
-                        selectedPiece.StyleId += "_crowned";
+                        selectedPiece.StyleId += CrownedStyleID;
                     }
                 }
 
@@ -242,7 +252,7 @@ namespace Draughts
             piece.SetValue(Grid.RowProperty, 0);
             piece.IsEnabled = false;
 
-            if (piece.StyleId.Contains("white"))
+            if (piece.StyleId.Contains(WhiteTeamStyleID))
             {
                 TakenWhitePieces.Children.Add(piece);
                 piece.SetValue(Grid.ColumnProperty, blackScore);
@@ -282,11 +292,11 @@ namespace Draughts
             // first check if there is a piece there to jump
             // second make sure the direction is the same as we are allowed to go
             // third make sure we cant take our own piece the replace just removes the _crowned to get color in the style id
-            if (piece != null && direction == -yDiff && selectedPiece.StyleId.Replace("_crowned", "") != piece.StyleId.Replace("_crowned", ""))
+            if (piece != null && direction == -yDiff && selectedPiece.StyleId.Replace(CrownedStyleID, string.Empty) != piece.StyleId.Replace(CrownedStyleID, string.Empty))
             {
                 TakePiece(piece);
 
-                if (selectedPiece.StyleId.Contains("white"))
+                if (selectedPiece.StyleId.Contains(WhiteTeamStyleID))
                 {
                     whiteScore++;
                 }
@@ -306,13 +316,13 @@ namespace Draughts
             Image piece = (Image)sender;
 
             // if we click on a white piece and its not their turn return and dont allow selecting it
-            if (piece.StyleId.Contains("white") && isBlacksTurn)
+            if (piece.StyleId.Contains(WhiteTeamStyleID) && isBlacksTurn)
             {
                 return;
             }
 
             // if we click on a black piece and its not their turn return and dont allow selecting it
-            if (piece.StyleId.Contains("black") && isBlacksTurn == false)
+            if (piece.StyleId.Contains(BlackTeamStyleID) && isBlacksTurn == false)
             {
                 return;
             }
